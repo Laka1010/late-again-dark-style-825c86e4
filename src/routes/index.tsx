@@ -53,8 +53,6 @@ function Index() {
       <Hero />
       <Marquee />
       <Collection />
-      <About />
-      <Lookbook />
       <Newsletter />
       <Footer />
     </div>
