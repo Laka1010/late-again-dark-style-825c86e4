@@ -53,8 +53,6 @@ function Index() {
       <Hero />
       <Marquee />
       <Collection />
-      <About />
-      <Lookbook />
       <Newsletter />
       <Footer />
     </div>
@@ -321,8 +319,6 @@ function Footer() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-silver">Navigate</p>
             <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
               <li><a href="#shop" className="hover:text-foreground">Shop</a></li>
-              <li><a href="#lookbook" className="hover:text-foreground">Lookbook</a></li>
-              <li><a href="#about" className="hover:text-foreground">About</a></li>
               <li><a href="mailto:hello@lateagaing.com" className="hover:text-foreground">Contact</a></li>
             </ul>
           </div>
