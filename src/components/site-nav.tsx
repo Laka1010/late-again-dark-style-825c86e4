@@ -22,8 +22,6 @@ export function SiteNav() {
         </Link>
         <ul className="hidden items-center gap-10 text-[10px] uppercase tracking-[0.3em] text-muted-foreground md:flex">
           <li><a href="#shop" className="transition-colors hover:text-foreground">Shop</a></li>
-          <li><a href="#about" className="transition-colors hover:text-foreground">About</a></li>
-          <li><a href="#lookbook" className="transition-colors hover:text-foreground">Lookbook</a></li>
           <li><a href="#contact" className="transition-colors hover:text-foreground">Contact</a></li>
         </ul>
         <a href="#shop" className="text-[10px] uppercase tracking-[0.3em] text-foreground">
