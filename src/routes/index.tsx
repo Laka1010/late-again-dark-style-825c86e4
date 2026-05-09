@@ -325,10 +325,8 @@ function Footer() {
           <div>
             <p className="text-[10px] uppercase tracking-[0.3em] text-silver">Follow</p>
             <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground">Instagram</a></li>
-              <li><a href="#" className="hover:text-foreground">TikTok</a></li>
-              <li><a href="#" className="hover:text-foreground">Are.na</a></li>
-              <li><a href="#" className="hover:text-foreground">Spotify</a></li>
+              <li><a href="https://www.instagram.com/lateagain.xyz/reels/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">Instagram</a></li>
+              <li><a href="https://www.tiktok.com/@lateagain.xyz" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">TikTok</a></li>
             </ul>
           </div>
         </div>
