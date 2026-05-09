@@ -1,8 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { User } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -24,9 +27,21 @@ export function SiteNav() {
           <li><a href="#shop" className="transition-colors hover:text-foreground">Shop</a></li>
           <li><a href="#contact" className="transition-colors hover:text-foreground">Contact</a></li>
         </ul>
-        <a href="#shop" className="text-[10px] uppercase tracking-[0.3em] text-foreground">
-          Bag <span className="text-muted-foreground">(0)</span>
-        </a>
+        <div className="flex items-center gap-6">
+          <a href="#shop" className="text-[10px] uppercase tracking-[0.3em] text-foreground">
+            Bag <span className="text-muted-foreground">(0)</span>
+          </a>
+          <Link
+            to="/account"
+            aria-label={user ? "Account" : "Sign in"}
+            className="flex items-center gap-2 text-foreground transition-colors hover:text-silver"
+          >
+            <User size={16} strokeWidth={1.25} />
+            <span className="hidden text-[10px] uppercase tracking-[0.3em] sm:inline">
+              {user ? "Account" : "Sign in"}
+            </span>
+          </Link>
+        </div>
       </nav>
     </header>
   );
