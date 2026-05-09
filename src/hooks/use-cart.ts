@@ -37,7 +37,7 @@ export function useCart() {
   useEffect(() => {
     if (!user) return;
     const channel = supabase
-      .channel(`cart-${user.id}`)
+      .channel(`cart-${user.id}-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "cart_items", filter: `user_id=eq.${user.id}` },
