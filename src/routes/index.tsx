@@ -1,17 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteNav } from "@/components/site-nav";
 import { useReveal } from "@/hooks/use-reveal";
 import hero from "@/assets/hero.jpg";
 import about from "@/assets/about.jpg";
-import pHoodie from "@/assets/product-hoodie.jpg";
-import pTee from "@/assets/product-tee.jpg";
-import pCargo from "@/assets/product-cargo.jpg";
-import pJacket from "@/assets/product-jacket.jpg";
 import look1 from "@/assets/look-1.jpg";
 import look2 from "@/assets/look-2.jpg";
 import look3 from "@/assets/look-3.jpg";
 import look4 from "@/assets/look-4.jpg";
+import { products } from "@/data/products";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -30,13 +27,6 @@ export const Route = createFileRoute("/")({
     ],
   }),
 });
-
-const products = [
-  { name: "Midnight Hoodie", category: "Outerwear", price: "€220", img: pHoodie },
-  { name: "Boxy Tee 001", category: "Tops", price: "€95", img: pTee },
-  { name: "Cargo Pant Noir", category: "Bottoms", price: "€280", img: pCargo },
-  { name: "Bomber Eclipse", category: "Outerwear", price: "€520", img: pJacket },
-];
 
 const looks = [
   { src: look1, span: "row-span-2" },
@@ -131,7 +121,13 @@ function Collection() {
 
       <div className="grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-4">
         {products.map((p, i) => (
-          <article key={p.name} className="group reveal" style={{ transitionDelay: `${i * 80}ms` }}>
+          <Link
+            key={p.id}
+            to="/products/$id"
+            params={{ id: p.id }}
+            className="group block reveal"
+            style={{ transitionDelay: `${i * 80}ms` }}
+          >
             <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
               <img
                 src={p.img}
@@ -143,9 +139,9 @@ function Collection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
               <div className="absolute bottom-4 left-4 right-4 translate-y-3 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                <button className="w-full glass hairline px-4 py-3 text-[10px] uppercase tracking-[0.3em] text-foreground">
-                  Add to bag
-                </button>
+                <span className="block w-full glass hairline px-4 py-3 text-center text-[10px] uppercase tracking-[0.3em] text-foreground">
+                  View piece →
+                </span>
               </div>
             </div>
             <div className="mt-5 flex items-start justify-between gap-4">
@@ -155,9 +151,9 @@ function Collection() {
                 </p>
                 <h3 className="font-display mt-1 text-base text-foreground">{p.name}</h3>
               </div>
-              <p className="font-display text-sm text-silver">{p.price}</p>
+              <p className="font-display text-sm text-silver">{p.priceLabel}</p>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
     </section>
