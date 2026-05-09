@@ -39,7 +39,7 @@ export const Route = createFileRoute("/products/$id")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: import("@/data/products").Product };
   const { addItem, isAuthed } = useCart();
   const navigate = useNavigate();
   const [size, setSize] = useState(product.sizes[1] ?? product.sizes[0]);
