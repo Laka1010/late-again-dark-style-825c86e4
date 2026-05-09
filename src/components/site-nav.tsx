@@ -2,10 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { User } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useCart } from "@/hooks/use-cart";
 
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
+  const { count } = useCart();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -28,9 +30,9 @@ export function SiteNav() {
           <li><a href="#contact" className="transition-colors hover:text-foreground">Contact</a></li>
         </ul>
         <div className="flex items-center gap-6">
-          <a href="#shop" className="text-[10px] uppercase tracking-[0.3em] text-foreground">
-            Bag <span className="text-muted-foreground">(0)</span>
-          </a>
+          <Link to="/bag" className="text-[10px] uppercase tracking-[0.3em] text-foreground transition-colors hover:text-silver">
+            Bag <span className="text-muted-foreground">({count})</span>
+          </Link>
           <Link
             to="/account"
             aria-label={user ? "Account" : "Sign in"}
