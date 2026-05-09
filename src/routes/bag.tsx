@@ -137,7 +137,7 @@ function BagPage() {
                 <span className="font-display text-xl text-foreground">€{subtotal}</span>
               </div>
               <button
-                onClick={() => toast.message("Checkout coming soon")}
+                onClick={() => navigate({ to: "/checkout" })}
                 className="btn-ghost mt-8 w-full"
               >
                 Checkout →
