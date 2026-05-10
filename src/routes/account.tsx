@@ -19,6 +19,13 @@ export const Route = createFileRoute("/account")({
 const emailSchema = z.string().trim().email("Invalid email").max(255);
 const passwordSchema = z.string().min(6, "At least 6 characters").max(72);
 const nameSchema = z.string().trim().min(1, "Required").max(60);
+const phoneSchema = z
+  .string()
+  .trim()
+  .max(30)
+  .regex(/^[+\d\s()-]{5,30}$/, "Invalid phone")
+  .optional()
+  .or(z.literal(""));
 
 function AccountPage() {
   const { user, loading } = useAuth();
@@ -75,6 +82,7 @@ function AuthForms() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
 
@@ -96,12 +104,14 @@ function AuthForms() {
       if (mode === "signup") {
         const n1 = nameSchema.safeParse(name);
         if (!n1.success) throw new Error(n1.error.issues[0].message);
+        const ph1 = phoneSchema.safeParse(phone);
+        if (!ph1.success) throw new Error(ph1.error.issues[0].message);
         const { error } = await supabase.auth.signUp({
           email: e1.data,
           password: p1.data,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
-            data: { display_name: n1.data },
+            data: { display_name: n1.data, phone: ph1.data ?? "" },
           },
         });
         if (error) throw error;
@@ -137,15 +147,26 @@ function AuthForms() {
 
       <form onSubmit={onSubmit} className="mt-12 space-y-6">
         {mode === "signup" && (
-          <Field label="Name">
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none"
-            />
-          </Field>
+          <>
+            <Field label="Name">
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none"
+              />
+            </Field>
+            <Field label="Phone (optional)">
+              <input
+                type="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none"
+              />
+            </Field>
+          </>
         )}
         <Field label="Email">
           <input
