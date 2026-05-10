@@ -18,7 +18,6 @@ export const Route = createFileRoute("/checkout")({
 });
 
 const schema = z.object({
-  email: z.string().trim().email("Invalid email"),
   firstName: z.string().trim().min(1, "Required").max(60),
   lastName: z.string().trim().min(1, "Required").max(60),
   address: z.string().trim().min(1, "Required").max(120),
@@ -30,7 +29,6 @@ const schema = z.object({
   card: z.string().trim().regex(/^[\d\s]{12,23}$/, "Invalid card"),
   expiry: z.string().trim().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "MM/YY"),
   cvc: z.string().trim().regex(/^\d{3,4}$/, "Invalid CVC"),
-  nameOnCard: z.string().trim().min(1, "Required").max(80),
 });
 
 function CheckoutPage() {
@@ -39,7 +37,6 @@ function CheckoutPage() {
   const { items, loading, refresh, removeItem } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    email: "",
     firstName: "",
     lastName: "",
     address: "",
@@ -51,7 +48,6 @@ function CheckoutPage() {
     card: "",
     expiry: "",
     cvc: "",
-    nameOnCard: "",
   });
 
   const lines = items
@@ -111,11 +107,6 @@ function CheckoutPage() {
         ) : (
           <form onSubmit={handleSubmit} className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1fr_360px]">
             <div className="space-y-12">
-              <Section title="Contact">
-                <Field label="Email" value={form.email} onChange={set("email")} type="email" autoComplete="email" />
-                <Field label="Phone" value={form.phone} onChange={set("phone")} autoComplete="tel" />
-              </Section>
-
               <Section title="Shipping address">
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="First name" value={form.firstName} onChange={set("firstName")} autoComplete="given-name" />
@@ -128,6 +119,7 @@ function CheckoutPage() {
                   <Field label="Postal code" value={form.postal} onChange={set("postal")} autoComplete="postal-code" />
                 </div>
                 <Field label="Country" value={form.country} onChange={set("country")} autoComplete="country-name" />
+                <Field label="Phone" value={form.phone} onChange={set("phone")} autoComplete="tel" />
               </Section>
 
               <Section title="Payment">
@@ -136,7 +128,6 @@ function CheckoutPage() {
                   <Field label="Expiry (MM/YY)" value={form.expiry} onChange={set("expiry")} placeholder="04/28" autoComplete="cc-exp" />
                   <Field label="CVC" value={form.cvc} onChange={set("cvc")} placeholder="123" inputMode="numeric" autoComplete="cc-csc" />
                 </div>
-                <Field label="Name on card" value={form.nameOnCard} onChange={set("nameOnCard")} autoComplete="cc-name" />
               </Section>
             </div>
 
