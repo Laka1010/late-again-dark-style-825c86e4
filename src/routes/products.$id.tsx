@@ -1,27 +1,16 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { SiteNav } from "@/components/site-nav";
-import { getProduct, products } from "@/data/products";
 import { useCart } from "@/hooks/use-cart";
+import { useProducts } from "@/hooks/use-products";
 
 export const Route = createFileRoute("/products/$id")({
-  loader: ({ params }) => {
-    const product = getProduct(params.id);
-    if (!product) throw notFound();
-    return { product };
-  },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.product.name} — Late Againg` },
-          { name: "description", content: loaderData.product.description },
-          { property: "og:title", content: loaderData.product.name },
-          { property: "og:description", content: loaderData.product.description },
-          { property: "og:image", content: loaderData.product.img },
-          { name: "twitter:image", content: loaderData.product.img },
-        ]
-      : [],
+  head: () => ({
+    meta: [
+      { title: "Piece — Late Againg" },
+      { name: "description", content: "Late Againg piece details." },
+    ],
   }),
   component: ProductPage,
   notFoundComponent: () => (
@@ -39,11 +28,38 @@ export const Route = createFileRoute("/products/$id")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData() as { product: import("@/data/products").Product };
+  const { id } = Route.useParams();
+  const { products, getProduct, loading } = useProducts();
+  const product = getProduct(id);
   const { addItem, isAuthed } = useCart();
   const navigate = useNavigate();
-  const [size, setSize] = useState(product.sizes[1] ?? product.sizes[0]);
+  const [size, setSize] = useState<string>("");
   const [busy, setBusy] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="grain min-h-screen bg-background text-foreground">
+        <SiteNav />
+        <p className="pt-40 text-center text-xs uppercase tracking-[0.3em] text-muted-foreground">Loading…</p>
+      </div>
+    );
+  }
+  if (!product) {
+    return (
+      <div className="grain min-h-screen bg-background text-foreground">
+        <SiteNav />
+        <div className="flex min-h-screen items-center justify-center px-6 text-center">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">404</p>
+            <h1 className="font-display mt-4 text-3xl font-light">Piece not found</h1>
+            <Link to="/" className="btn-ghost mt-8 inline-block">Back to collection</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const activeSize = size || product.sizes[1] || product.sizes[0] || "";
 
   const onAdd = async () => {
     if (!isAuthed) {
@@ -51,9 +67,13 @@ function ProductPage() {
       navigate({ to: "/account" });
       return;
     }
+    if (!activeSize) {
+      toast.error("This piece is currently sold out");
+      return;
+    }
     setBusy(true);
     try {
-      await addItem(product.id, size, 1);
+      await addItem(product.id, activeSize, 1);
       toast.success(`${product.name} added to bag`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not add to bag");
@@ -104,7 +124,7 @@ function ProductPage() {
                     key={s}
                     onClick={() => setSize(s)}
                     className={`hairline px-5 py-3 text-[11px] uppercase tracking-[0.3em] transition-colors ${
-                      size === s
+                      activeSize === s
                         ? "border-foreground bg-foreground text-background"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
@@ -112,6 +132,9 @@ function ProductPage() {
                     {s}
                   </button>
                 ))}
+                {product.sizes.length === 0 && (
+                  <p className="text-xs text-muted-foreground">All sizes sold out</p>
+                )}
               </div>
             </div>
 
