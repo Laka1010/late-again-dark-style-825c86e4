@@ -17,6 +17,7 @@ export const Route = createFileRoute("/bag")({
 });
 
 function BagPage() {
+  const { getProduct } = useProducts();
   const { user, loading: authLoading } = useAuth();
   const { items, loading, updateQuantity, removeItem } = useCart();
   const navigate = useNavigate();
