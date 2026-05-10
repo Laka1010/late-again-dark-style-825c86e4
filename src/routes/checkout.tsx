@@ -5,7 +5,7 @@ import { z } from "zod";
 import { SiteNav } from "@/components/site-nav";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
-import { getProduct } from "@/data/products";
+import { useProducts } from "@/hooks/use-products";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -32,6 +32,7 @@ const schema = z.object({
 });
 
 function CheckoutPage() {
+  const { getProduct } = useProducts();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { items, loading, refresh, removeItem } = useCart();

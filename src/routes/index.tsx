@@ -8,7 +8,7 @@ import look1 from "@/assets/look-1.jpg";
 import look2 from "@/assets/look-2.jpg";
 import look3 from "@/assets/look-3.jpg";
 import look4 from "@/assets/look-4.jpg";
-import { products } from "@/data/products";
+import { useProducts } from "@/hooks/use-products";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -103,6 +103,7 @@ function Marquee() {
 }
 
 function Collection() {
+  const { products } = useProducts();
   return (
     <section id="shop" className="mx-auto max-w-[1400px] px-6 py-32 md:px-12">
       <header className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

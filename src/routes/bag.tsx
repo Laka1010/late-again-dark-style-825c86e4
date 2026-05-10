@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { SiteNav } from "@/components/site-nav";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
-import { getProduct } from "@/data/products";
+import { useProducts } from "@/hooks/use-products";
 
 export const Route = createFileRoute("/bag")({
   component: BagPage,
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/bag")({
 });
 
 function BagPage() {
+  const { getProduct } = useProducts();
   const { user, loading: authLoading } = useAuth();
   const { items, loading, updateQuantity, removeItem } = useCart();
   const navigate = useNavigate();
