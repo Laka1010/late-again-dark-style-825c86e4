@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Upload, Trash2, Plus } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
@@ -97,7 +97,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function ProductsAdmin() {
   const { products, refresh } = useProducts();
-  const navigate = useNavigate();
+
 
   const onCreate = async () => {
     const id = window.prompt("New product slug (e.g. new-tee-002):")?.trim();
