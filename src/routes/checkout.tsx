@@ -32,6 +32,7 @@ const schema = z.object({
 });
 
 function CheckoutPage() {
+  const { getProduct } = useProducts();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { items, loading, refresh, removeItem } = useCart();
