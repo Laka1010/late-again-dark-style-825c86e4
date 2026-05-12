@@ -50,6 +50,59 @@ function AccountPage() {
 function SignedIn() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<{ display_name: string | null; phone: string | null; avatar_url: string | null } | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("display_name, phone, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (error) toast.error(error.message);
+      else if (data) {
+        setProfile(data);
+        setName(data.display_name ?? "");
+        setPhone(data.phone ?? "");
+      }
+      setLoadingProfile(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
+  const onSave = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setSaving(true);
+    try {
+      const n1 = nameSchema.safeParse(name);
+      if (!n1.success) throw new Error(n1.error.issues[0].message);
+      const ph1 = phoneSchema.safeParse(phone);
+      if (!ph1.success) throw new Error(ph1.error.issues[0].message);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ display_name: n1.data, phone: ph1.data || null })
+        .eq("id", user.id);
+      if (error) throw error;
+      setProfile((p) => ({ ...(p ?? { avatar_url: null }), display_name: n1.data, phone: ph1.data || null }));
+      setEditing(false);
+      toast.success("Profile updated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not update");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const onLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -66,13 +119,66 @@ function SignedIn() {
       <h1 className="font-display mt-4 text-4xl font-light tracking-tight text-foreground">
         Welcome back.
       </h1>
-      <p className="mt-4 text-sm text-muted-foreground">{user?.email}</p>
-      <button
-        onClick={onLogout}
-        className="btn-ghost mt-10"
-      >
+
+      <section className="mt-10 border-t border-border pt-8">
+        <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Your details</p>
+        {loadingProfile ? (
+          <p className="mt-6 text-xs uppercase tracking-[0.3em] text-muted-foreground">Loading…</p>
+        ) : editing ? (
+          <form onSubmit={onSave} className="mt-6 space-y-6">
+            <Field label="Name">
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none"
+              />
+            </Field>
+            <Field label="Phone (optional)">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none"
+              />
+            </Field>
+            <div className="flex gap-4">
+              <button type="submit" disabled={saving} className="btn-ghost disabled:opacity-50">
+                {saving ? "…" : "Save →"}
+              </button>
+              <button type="button" onClick={() => setEditing(false)} className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <dl className="mt-6 space-y-5">
+            <Row label="Name" value={profile?.display_name ?? "—"} />
+            <Row label="Email" value={user?.email ?? "—"} />
+            <Row label="Phone" value={profile?.phone ?? "—"} />
+            <button
+              onClick={() => setEditing(true)}
+              className="mt-4 text-[10px] uppercase tracking-[0.3em] text-foreground hover:text-silver"
+            >
+              Edit details →
+            </button>
+          </dl>
+        )}
+      </section>
+
+      <button onClick={onLogout} className="btn-ghost mt-10">
         Sign out
       </button>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-6 border-b border-border/50 pb-3">
+      <dt className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">{label}</dt>
+      <dd className="text-sm text-foreground">{value}</dd>
     </div>
   );
 }
