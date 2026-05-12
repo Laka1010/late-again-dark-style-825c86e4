@@ -26,9 +26,6 @@ const schema = z.object({
   postal: z.string().trim().min(3, "Required").max(20),
   country: z.string().trim().min(1, "Required").max(60),
   phone: z.string().trim().min(5, "Required").max(30),
-  card: z.string().trim().regex(/^[\d\s]{12,23}$/, "Invalid card"),
-  expiry: z.string().trim().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "MM/YY"),
-  cvc: z.string().trim().regex(/^\d{3,4}$/, "Invalid CVC"),
 });
 
 function CheckoutPage() {
@@ -46,9 +43,6 @@ function CheckoutPage() {
     postal: "",
     country: "Spain",
     phone: "",
-    card: "",
-    expiry: "",
-    cvc: "",
   });
 
   const lines = items
@@ -72,16 +66,7 @@ function CheckoutPage() {
       toast.error("Your bag is empty");
       return;
     }
-    setSubmitting(true);
-    try {
-      await new Promise((r) => setTimeout(r, 1200));
-      await Promise.all(items.map((i) => removeItem(i.id).catch(() => null)));
-      await refresh();
-      toast.success("Order placed");
-      navigate({ to: "/" });
-    } finally {
-      setSubmitting(false);
-    }
+    toast.error("Payments are not yet enabled. Please check back soon.");
   };
 
   return (
@@ -124,11 +109,9 @@ function CheckoutPage() {
               </Section>
 
               <Section title="Payment">
-                <Field label="Card number" value={form.card} onChange={set("card")} placeholder="1234 5678 9012 3456" inputMode="numeric" autoComplete="cc-number" />
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="Expiry (MM/YY)" value={form.expiry} onChange={set("expiry")} placeholder="04/28" autoComplete="cc-exp" />
-                  <Field label="CVC" value={form.cvc} onChange={set("cvc")} placeholder="123" inputMode="numeric" autoComplete="cc-csc" />
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Payments are coming soon. We are integrating a secure payment provider — no card details are collected here.
+                </p>
               </Section>
             </div>
 
@@ -166,8 +149,8 @@ function CheckoutPage() {
                 <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Total</span>
                 <span className="font-display text-xl">€{total}</span>
               </div>
-              <button type="submit" disabled={submitting} className="btn-ghost mt-8 w-full disabled:opacity-50">
-                {submitting ? "Placing order…" : "Place order →"}
+              <button type="submit" disabled className="btn-ghost mt-8 w-full opacity-50">
+                Payments coming soon
               </button>
               <Link to="/bag" className="mt-4 block text-center text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">
                 ← Back to bag
