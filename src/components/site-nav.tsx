@@ -25,7 +25,7 @@ export function SiteNav() {
     >
       <nav className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 md:px-12">
         <Link to="/" className="font-display text-sm font-medium tracking-[0.35em] text-foreground">
-          LATE<span className="text-accent">·</span>AGAIN
+          LATE AGAIN
         </Link>
         <ul className="hidden items-center gap-10 text-[10px] uppercase tracking-[0.3em] text-muted-foreground md:flex">
           <li><a href="#shop" className="transition-colors hover:text-foreground">Shop</a></li>
