@@ -10,8 +10,8 @@ export const Route = createFileRoute("/account")({
   component: AccountPage,
   head: () => ({
     meta: [
-      { title: "Account — Late Againg" },
-      { name: "description", content: "Sign in or create your Late Againg account." },
+      { title: "Account — Late Again" },
+      { name: "description", content: "Sign in or create your Late Again account." },
     ],
   }),
 });

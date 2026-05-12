@@ -11,8 +11,8 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
   head: () => ({
     meta: [
-      { title: "Checkout — Late Againg" },
-      { name: "description", content: "Complete your Late Againg order." },
+      { title: "Checkout — Late Again" },
+      { name: "description", content: "Complete your Late Again order." },
     ],
   }),
 });
