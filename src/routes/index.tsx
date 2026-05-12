@@ -63,9 +63,6 @@ function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/10 to-background" />
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-        <p className="mb-6 text-[10px] uppercase tracking-[0.5em] text-silver opacity-80 reveal">
-          FW · MMXVI Archive
-        </p>
         <h1 className="font-display text-[18vw] font-light leading-[0.85] tracking-[-0.04em] text-foreground reveal md:text-[10rem]">
           Late <span className="italic text-silver">Again</span>
         </h1>
