@@ -85,7 +85,7 @@ function Hero() {
 }
 
 function Marquee() {
-  const items = ["Too early", "Late Again", "MMXVI", "Found in style", "After hours", "·"];
+  const items = ["Too early", "Late Again", "MMXVI", "After hours", "·"];
   return (
     <div className="border-y border-border/40 bg-background py-5 overflow-hidden">
       <div className="flex whitespace-nowrap marquee">
