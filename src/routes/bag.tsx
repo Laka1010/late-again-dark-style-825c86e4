@@ -10,8 +10,8 @@ export const Route = createFileRoute("/bag")({
   component: BagPage,
   head: () => ({
     meta: [
-      { title: "Bag — Late Againg" },
-      { name: "description", content: "Your Late Againg shopping bag." },
+      { title: "Bag — Late Again" },
+      { name: "description", content: "Your Late Again shopping bag." },
     ],
   }),
 });

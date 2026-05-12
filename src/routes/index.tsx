@@ -14,14 +14,14 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Late Againg — Lost in time. Found in style." },
+      { title: "Late Again — Too early" },
       {
         name: "description",
         content:
-          "Late Againg — dark streetwear born from 2016 nostalgia. Oversized hoodies, boxy tees, cargo pants and outerwear. Lost in time. Found in style.",
+          "Late Again — dark streetwear born from 2016 nostalgia. Oversized hoodies, boxy tees, cargo pants and outerwear. Too early",
       },
-      { property: "og:title", content: "Late Againg" },
-      { property: "og:description", content: "Lost in time. Found in style." },
+      { property: "og:title", content: "Late Again" },
+      { property: "og:description", content: "Too early" },
       { property: "og:image", content: hero },
       { name: "twitter:image", content: hero },
     ],
@@ -54,7 +54,7 @@ function Hero() {
     <section className="relative h-[100svh] w-full overflow-hidden">
       <img
         src={hero}
-        alt="Late Againg campaign — figure in dark hoodie on a foggy night street"
+        alt="Late Again campaign — figure in dark hoodie on a foggy night street"
         width={1920}
         height={1280}
         className="absolute inset-0 h-full w-full object-cover"
@@ -67,10 +67,10 @@ function Hero() {
           FW · MMXVI Archive
         </p>
         <h1 className="font-display text-[18vw] font-light leading-[0.85] tracking-[-0.04em] text-foreground reveal md:text-[10rem]">
-          Late <span className="italic text-silver">Againg</span>
+          Late <span className="italic text-silver">Again</span>
         </h1>
         <p className="mt-8 max-w-md text-sm uppercase tracking-[0.3em] text-muted-foreground reveal">
-          Lost in time. Found in style.
+          Too early
         </p>
         <a href="#shop" className="btn-ghost mt-12 reveal">
           Shop Now
@@ -85,7 +85,7 @@ function Hero() {
 }
 
 function Marquee() {
-  const items = ["Lost in time", "Late Againg", "MMXVI", "Found in style", "After hours", "·"];
+  const items = ["Too early", "Late Again", "MMXVI", "Found in style", "After hours", "·"];
   return (
     <div className="border-y border-border/40 bg-background py-5 overflow-hidden">
       <div className="flex whitespace-nowrap marquee">
@@ -169,7 +169,7 @@ function About() {
           <div className="aspect-[4/5] overflow-hidden">
             <img
               src={about}
-              alt="Late Againg atelier portrait"
+              alt="Late Again atelier portrait"
               width={1280}
               height={1440}
               loading="lazy"
@@ -188,7 +188,7 @@ function About() {
           </h2>
           <div className="mt-10 space-y-6 text-base leading-relaxed text-muted-foreground md:max-w-xl">
             <p className="reveal">
-              Late Againg is a study in dark minimalism — a love letter to the year 2016,
+              Late Again is a study in dark minimalism — a love letter to the year 2016,
               when streetwear quietly became luxury. Heavy cottons, washed blacks,
               imperfect seams. Clothing that ages like a memory.
             </p>
@@ -269,7 +269,7 @@ function Newsletter() {
           04 — Newsletter
         </p>
         <h2 className="font-display mt-6 text-4xl font-light tracking-tight text-foreground reveal md:text-6xl">
-          Enter the Late Againg <span className="italic text-silver">universe</span>.
+          Enter the Late Again <span className="italic text-silver">universe</span>.
         </h2>
         <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground reveal">
           Drop announcements, archive access, and quiet letters from the studio.
@@ -306,7 +306,7 @@ function Footer() {
         <div className="grid grid-cols-2 gap-12 md:grid-cols-4">
           <div className="col-span-2">
             <h3 className="font-display text-3xl font-light tracking-[-0.02em] text-foreground md:text-5xl">
-              Late<span className="text-accent">·</span>Againg
+              Late<span className="text-accent">·</span>Again
             </h3>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               Dark streetwear from a quieter year.
@@ -329,8 +329,8 @@ function Footer() {
         </div>
 
         <div className="mt-20 flex flex-col items-start justify-between gap-4 border-t border-border/40 pt-8 text-[10px] uppercase tracking-[0.3em] text-muted-foreground md:flex-row md:items-center">
-          <p>© MMXXVI Late Againg. All rights reserved.</p>
-          <p>Lost in time. Found in style.</p>
+          <p>© MMXXVI Late Again. All rights reserved.</p>
+          <p>Too early</p>
         </div>
       </div>
     </footer>

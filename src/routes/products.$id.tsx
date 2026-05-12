@@ -8,8 +8,8 @@ import { useProducts } from "@/hooks/use-products";
 export const Route = createFileRoute("/products/$id")({
   head: () => ({
     meta: [
-      { title: "Piece — Late Againg" },
-      { name: "description", content: "Late Againg piece details." },
+      { title: "Piece — Late Again" },
+      { name: "description", content: "Late Again piece details." },
     ],
   }),
   component: ProductPage,
