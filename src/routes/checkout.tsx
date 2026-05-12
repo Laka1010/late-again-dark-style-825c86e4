@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import { SiteNav } from "@/components/site-nav";
@@ -30,10 +30,8 @@ const schema = z.object({
 
 function CheckoutPage() {
   const { getProduct } = useProducts();
-  const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { items, loading, refresh, removeItem } = useCart();
-  const [submitting, setSubmitting] = useState(false);
+  const { items, loading } = useCart();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
