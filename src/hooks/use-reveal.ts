@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 
-export function useReveal() {
+export function useReveal(deps: ReadonlyArray<unknown> = []) {
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>(".reveal");
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -14,7 +13,20 @@ export function useReveal() {
       },
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+
+    const observeAll = () => {
+      document.querySelectorAll<HTMLElement>(".reveal:not(.in)").forEach((el) => io.observe(el));
+    };
+    observeAll();
+
+    // Re-observe when nodes are added later (e.g. async-loaded products).
+    const mo = new MutationObserver(() => observeAll());
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      mo.disconnect();
+      io.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 }
