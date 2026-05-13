@@ -170,7 +170,60 @@ function SignedIn() {
       <button onClick={onLogout} className="btn-ghost mt-10">
         Sign out
       </button>
+
+      <ChangeOwnPassword />
     </div>
+  );
+}
+
+function ChangeOwnPassword() {
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      const p = passwordSchema.safeParse(pw);
+      if (!p.success) throw new Error(p.error.issues[0].message);
+      if (pw !== pw2) throw new Error("Passwords do not match");
+      const { error } = await supabase.auth.updateUser({ password: p.data });
+      if (error) throw error;
+      toast.success("Password updated");
+      setPw(""); setPw2(""); setOpen(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not update");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section className="mt-10 border-t border-border pt-8">
+      <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Password</p>
+      {!open ? (
+        <button onClick={() => setOpen(true)} className="mt-6 text-[10px] uppercase tracking-[0.3em] text-foreground hover:text-silver">
+          Change password →
+        </button>
+      ) : (
+        <form onSubmit={onSubmit} className="mt-6 space-y-6">
+          <Field label="New password">
+            <input type="password" required value={pw} onChange={(e) => setPw(e.target.value)} autoComplete="new-password"
+              className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none" />
+          </Field>
+          <Field label="Confirm password">
+            <input type="password" required value={pw2} onChange={(e) => setPw2(e.target.value)} autoComplete="new-password"
+              className="w-full bg-transparent border-b border-border px-0 py-3 text-sm text-foreground focus:border-foreground focus:outline-none" />
+          </Field>
+          <div className="flex gap-4">
+            <button type="submit" disabled={busy} className="btn-ghost disabled:opacity-50">{busy ? "…" : "Update →"}</button>
+            <button type="button" onClick={() => { setOpen(false); setPw(""); setPw2(""); }} className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground">Cancel</button>
+          </div>
+        </form>
+      )}
+    </section>
   );
 }
 
