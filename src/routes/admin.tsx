@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useProducts } from "@/hooks/use-products";
 import type { Product } from "@/data/products";
+import { useServerFn } from "@tanstack/react-start";
+import { adminSetUserPassword } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -330,14 +332,17 @@ function UsersAdmin() {
               </p>
               <p className="text-[10px] text-muted-foreground">{p.id}</p>
             </div>
-            <button
-              onClick={() => toggleAdmin(p.id)}
-              className={`hairline px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition-colors ${
-                isAdminRow(p.id) ? "border-foreground bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {isAdminRow(p.id) ? "Admin" : "Make admin"}
-            </button>
+            <div className="flex items-center gap-3">
+              <ResetPasswordButton userId={p.id} label={p.display_name || p.id.slice(0, 8)} />
+              <button
+                onClick={() => toggleAdmin(p.id)}
+                className={`hairline px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition-colors ${
+                  isAdminRow(p.id) ? "border-foreground bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {isAdminRow(p.id) ? "Admin" : "Make admin"}
+              </button>
+            </div>
           </div>
         ))}
         {profiles.length === 0 && (
@@ -345,5 +350,30 @@ function UsersAdmin() {
         )}
       </div>
     </div>
+  );
+}
+
+function ResetPasswordButton({ userId, label }: { userId: string; label: string }) {
+  const [busy, setBusy] = useState(false);
+  const setPw = useServerFn(adminSetUserPassword);
+  const onClick = async () => {
+    const pw = window.prompt(`New password for ${label} (min 6 chars):`);
+    if (!pw) return;
+    if (pw.length < 6) { toast.error("Password too short"); return; }
+    setBusy(true);
+    try {
+      await setPw({ data: { userId, password: pw } });
+      toast.success("Password updated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <button onClick={onClick} disabled={busy}
+      className="hairline px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground disabled:opacity-50">
+      {busy ? "…" : "Reset pw"}
+    </button>
   );
 }
