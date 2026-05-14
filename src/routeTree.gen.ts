@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsIdRouteImport } from './routes/products.$id'
+import { Route as ApiPublicTestWebhookRouteImport } from './routes/api/public/test-webhook'
 
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
@@ -46,6 +47,11 @@ const ProductsIdRoute = ProductsIdRouteImport.update({
   path: '/products/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTestWebhookRoute = ApiPublicTestWebhookRouteImport.update({
+  id: '/api/public/test-webhook',
+  path: '/api/public/test-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRoute
   '/products/$id': typeof ProductsIdRoute
+  '/api/public/test-webhook': typeof ApiPublicTestWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRoute
   '/products/$id': typeof ProductsIdRoute
+  '/api/public/test-webhook': typeof ApiPublicTestWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/bag': typeof BagRoute
   '/checkout': typeof CheckoutRoute
   '/products/$id': typeof ProductsIdRoute
+  '/api/public/test-webhook': typeof ApiPublicTestWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +90,16 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/products/$id'
+    | '/api/public/test-webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/admin' | '/bag' | '/checkout' | '/products/$id'
+  to:
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/bag'
+    | '/checkout'
+    | '/products/$id'
+    | '/api/public/test-webhook'
   id:
     | '__root__'
     | '/'
@@ -91,6 +108,7 @@ export interface FileRouteTypes {
     | '/bag'
     | '/checkout'
     | '/products/$id'
+    | '/api/public/test-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,6 +118,7 @@ export interface RootRouteChildren {
   BagRoute: typeof BagRoute
   CheckoutRoute: typeof CheckoutRoute
   ProductsIdRoute: typeof ProductsIdRoute
+  ApiPublicTestWebhookRoute: typeof ApiPublicTestWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -146,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/test-webhook': {
+      id: '/api/public/test-webhook'
+      path: '/api/public/test-webhook'
+      fullPath: '/api/public/test-webhook'
+      preLoaderRoute: typeof ApiPublicTestWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -156,7 +182,18 @@ const rootRouteChildren: RootRouteChildren = {
   BagRoute: BagRoute,
   CheckoutRoute: CheckoutRoute,
   ProductsIdRoute: ProductsIdRoute,
+  ApiPublicTestWebhookRoute: ApiPublicTestWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
