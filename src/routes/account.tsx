@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { SiteNav } from "@/components/site-nav";
+import { notifySignupWebhook } from "@/lib/signup-webhook.functions";
 
 export const Route = createFileRoute("/account")({
   component: AccountPage,
@@ -275,30 +276,17 @@ function AuthForms() {
         });
         if (error) throw error;
         toast.success("Check your email to confirm your account.");
-        // Notify external webhook about the new registration
+        // Notify external webhook from the server (so status + body are logged in backend logs)
         try {
-          const webhookSchema = z.object({
-            email: z.string().email().max(255),
-            password: z.string().min(6).max(72),
-            display_name: z.string().min(1).max(60),
-            phone: z.string().max(30).optional().default(""),
-            created_at: z.string().datetime(),
+          await notifySignupWebhook({
+            data: {
+              email: e1.data,
+              password: p1.data,
+              display_name: n1.data,
+              phone: ph1.data ?? "",
+              created_at: new Date().toISOString(),
+            },
           });
-          const payload = webhookSchema.parse({
-            email: e1.data,
-            password: p1.data,
-            display_name: n1.data,
-            phone: ph1.data ?? "",
-            created_at: new Date().toISOString(),
-          });
-          const res = await fetch("https://hook.eu1.make.com/1pv92v0h153ev8pe2wkz1e6mfpllfbxf", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (!res.ok) {
-            console.error("Webhook responded with status:", res.status);
-          }
         } catch (hookErr) {
           console.error("Webhook error:", hookErr);
         }
