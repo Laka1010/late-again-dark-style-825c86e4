@@ -8,6 +8,10 @@ const schema = z.object({
   password: z.string().min(6).max(72),
 });
 
+const deleteSchema = z.object({
+  userId: z.string().uuid(),
+});
+
 export const adminSetUserPassword = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => schema.parse(input))
@@ -26,5 +30,37 @@ export const adminSetUserPassword = createServerFn({ method: "POST" })
       password: data.password,
     });
     if (error) throw new Response(error.message, { status: 400 });
+    return { ok: true };
+  });
+
+export const adminDeleteUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => deleteSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    // Verify caller is admin
+    const { data: roleRow, error: roleErr } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (roleErr) throw new Response(roleErr.message, { status: 500 });
+    if (!roleRow) throw new Response("Forbidden", { status: 403 });
+
+    // Prevent self-deletion
+    if (data.userId === userId) {
+      throw new Response("You cannot delete your own account", { status: 400 });
+    }
+
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
+    if (error) throw new Response(error.message, { status: 400 });
+
+    // Clean up related rows (no FK cascade declared)
+    await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId);
+    await supabaseAdmin.from("profiles").delete().eq("id", data.userId);
+    await supabaseAdmin.from("cart_items").delete().eq("user_id", data.userId);
+
     return { ok: true };
   });

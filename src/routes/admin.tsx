@@ -9,7 +9,7 @@ import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useProducts } from "@/hooks/use-products";
 import type { Product } from "@/data/products";
 import { useServerFn } from "@tanstack/react-start";
-import { adminSetUserPassword } from "@/lib/admin-users.functions";
+import { adminSetUserPassword, adminDeleteUser } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -288,6 +288,7 @@ type ProfileRow = {
 type RoleRow = { user_id: string; role: string };
 
 function UsersAdmin() {
+  const { user: currentUser } = useAuth();
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [roles, setRoles] = useState<RoleRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -317,6 +318,22 @@ function UsersAdmin() {
     }
   };
 
+  const deleteUser = useServerFn(adminDeleteUser);
+  const onDeleteUser = async (uid: string, label: string) => {
+    if (uid === currentUser?.id) {
+      toast.error("You cannot delete your own account");
+      return;
+    }
+    if (!window.confirm(`Delete user "${label}"? This permanently removes their account and data.`)) return;
+    try {
+      await deleteUser({ data: { userId: uid } });
+      toast.success("User deleted");
+      load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete");
+    }
+  };
+
   if (loading) return <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Loading…</p>;
 
   return (
@@ -342,6 +359,15 @@ function UsersAdmin() {
               >
                 {isAdminRow(p.id) ? "Admin" : "Make admin"}
               </button>
+              {p.id !== currentUser?.id && (
+                <button
+                  onClick={() => onDeleteUser(p.id, p.display_name || p.id.slice(0, 8))}
+                  className="text-muted-foreground hover:text-destructive"
+                  title="Delete user"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
             </div>
           </div>
         ))}
