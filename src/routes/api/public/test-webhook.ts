@@ -1,14 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const WEBHOOK_URL = "https://hook.eu1.make.com/1pv92v0h153ev8pe2wkz1e6mfpllfbxf";
+const WEBHOOK_URL = "https://hook.eu1.make.com/c8e6u0aiiy9phq7195axvnapu6yr6nnd";
 
 function samplePayload() {
   return {
+    nombre: "Test User",
+    telefono: "+34600000000",
     email: "test@lateagain.dev",
-    password: "TestPass123",
-    display_name: "Test User",
-    phone: "+34600000000",
-    created_at: new Date().toISOString(),
   };
 }
 

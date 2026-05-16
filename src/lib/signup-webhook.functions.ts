@@ -1,14 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const WEBHOOK_URL = "https://hook.eu1.make.com/1pv92v0h153ev8pe2wkz1e6mfpllfbxf";
+const WEBHOOK_URL = "https://hook.eu1.make.com/c8e6u0aiiy9phq7195axvnapu6yr6nnd";
 
 const payloadSchema = z.object({
+  nombre: z.string().min(1).max(60),
+  telefono: z.string().max(30).optional().default(""),
   email: z.string().email().max(255),
-  password: z.string().min(6).max(72),
-  display_name: z.string().min(1).max(60),
-  phone: z.string().max(30).optional().default(""),
-  created_at: z.string().datetime(),
 });
 
 export const notifySignupWebhook = createServerFn({ method: "POST" })

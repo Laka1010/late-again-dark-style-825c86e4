@@ -280,11 +280,9 @@ function AuthForms() {
         try {
           await notifySignupWebhook({
             data: {
+              nombre: n1.data,
+              telefono: ph1.data ?? "",
               email: e1.data,
-              password: p1.data,
-              display_name: n1.data,
-              phone: ph1.data ?? "",
-              created_at: new Date().toISOString(),
             },
           });
         } catch (hookErr) {
