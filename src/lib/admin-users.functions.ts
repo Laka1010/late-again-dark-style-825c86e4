@@ -56,5 +56,11 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
     if (error) throw new Response(error.message, { status: 400 });
+
+    // Clean up related rows (no FK cascade declared)
+    await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId);
+    await supabaseAdmin.from("profiles").delete().eq("id", data.userId);
+    await supabaseAdmin.from("cart_items").delete().eq("user_id", data.userId);
+
     return { ok: true };
   });
