@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { SiteNav } from "@/components/site-nav";
 import { notifySignupWebhook } from "@/lib/signup-webhook.functions";
+import { notifyLoginWebhook } from "@/lib/login-webhook.functions";
 
 export const Route = createFileRoute("/account")({
   component: AccountPage,
@@ -294,6 +295,23 @@ function AuthForms() {
           password: p1.data,
         });
         if (error) throw error;
+        // Fire login webhook (best-effort)
+        try {
+          const { data: prof } = await supabase
+            .from("profiles")
+            .select("display_name, phone")
+            .eq("id", (await supabase.auth.getUser()).data.user?.id ?? "")
+            .maybeSingle();
+          await notifyLoginWebhook({
+            data: {
+              email: e1.data,
+              nombre: prof?.display_name ?? "",
+              telefono: prof?.phone ?? "",
+            },
+          });
+        } catch (hookErr) {
+          console.error("Login webhook error:", hookErr);
+        }
         toast.success("Welcome back");
         navigate({ to: "/" });
       }
